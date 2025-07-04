@@ -915,5 +915,455 @@ When CPU switches from one process to another, the OS must save the **context** 
 
 ---
 
+# 🧵 **3. Thread Management — Detailed Explanation**
+
+---
+
+## ✅ **Threads vs Processes**
+
+| Feature       | Process                                                            | Thread                                                                                           |
+| ------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| Definition    | A process is an independent unit of execution with its own memory. | A thread is a lightweight sub-process that shares memory with other threads in the same process. |
+| Overhead      | High (requires more resources)                                     | Low (lighter, faster to switch)                                                                  |
+| Isolation     | Fully isolated from others                                         | Shares memory space                                                                              |
+| Communication | Via IPC (Inter-Process Communication)                              | Easier through shared memory                                                                     |
+| Crashes       | One process crash doesn't affect others                            | One thread crash can affect entire process                                                       |
+
+---
+
+## ✅ **User-Level vs Kernel-Level Threads**
+
+| Feature           | User-Level Threads (ULT)      | Kernel-Level Threads (KLT)               |
+| ----------------- | ----------------------------- | ---------------------------------------- |
+| Managed by        | User-level thread library     | Kernel                                   |
+| Context Switching | Fast (no mode switching)      | Slower (requires kernel involvement)     |
+| Kernel Visibility | Not visible to OS             | Visible to OS                            |
+| Blocking Behavior | One blocked thread blocks all | One blocked thread doesn't affect others |
+| Examples          | POSIX pthreads, Java threads  | Windows NT threads, Linux kernel threads |
+
+---
+
+## ✅ **Thread Libraries**
+
+Libraries abstract thread creation and management for developers.
+
+1. **POSIX Threads (pthreads)**:
+
+   * Portable, Unix-based
+   * `pthread_create()`, `pthread_join()`, etc.
+
+2. **Windows Threads**:
+
+   * Windows API for thread creation: `CreateThread()`, `WaitForSingleObject()`
+
+3. **Java Threads**:
+
+   * High-level abstraction
+   * Created via extending `Thread` class or implementing `Runnable` interface
+
+---
+
+## ✅ **Multithreading Models**
+
+### 1. **Many-to-One**
+
+* Many user threads map to **one kernel thread**
+* Poor concurrency (one thread blocks all)
+* Simple to manage
+* Example: Green Threads in older Java
+
+### 2. **One-to-One**
+
+* Each user thread maps to **one kernel thread**
+* Better concurrency
+* Expensive due to more kernel resources
+* Example: Windows OS, Linux (pthreads)
+
+### 3. **Many-to-Many**
+
+* Many user threads mapped to **many kernel threads**
+* Best of both worlds
+* Efficient scheduling and better concurrency
+* Example: Solaris, Windows with fiber support
+
+---
+
+## ✅ **Thread Pooling**
+
+* A collection of pre-initialized threads ready to be assigned tasks.
+* Improves performance by reusing threads instead of creating/destroying them.
+* Useful in server applications (e.g., web servers, database servers).
+
+**Advantages:**
+
+* Reduces latency
+* Saves system resources
+* Prevents overload
+
+---
+
+## ✅ **Thread Synchronization**
+
+Multiple threads may access shared data → **Race Conditions** occur.
+
+### Synchronization Mechanisms:
+
+* **Mutexes (Mutual Exclusion)**:
+
+  * Ensures only one thread accesses critical section at a time
+* **Semaphores**:
+
+  * Generalized locking, can count resources
+* **Monitors**:
+
+  * High-level abstraction (automatic locking)
+* **Condition Variables**:
+
+  * Used for signaling between threads
+
+---
+
+## ✅ **Thread Scheduling**
+
+* Managed by kernel (KLT) or thread library (ULT)
+* Can follow policies like:
+
+  * Round Robin
+  * Priority-based
+  * FIFO (First-In-First-Out)
+* OS schedules threads based on fairness, priority, and real-time constraints.
+
+---
+
+# 💼 Interview Questions with Answers
+
+---
+
+### 🔹 Q1: What is the difference between a thread and a process?
+
+**A:** A process is an independent execution unit with its own memory, while a thread is a lightweight execution unit that shares memory with other threads in the same process.
+
+---
+
+### 🔹 Q2: What is a thread library?
+
+**A:** A thread library provides APIs to create, manage, and synchronize threads. Examples include POSIX threads (`pthreads`), Windows Threads, and Java Threads.
+
+---
+
+### 🔹 Q3: Explain the difference between user-level and kernel-level threads.
+
+**A:**
+
+* **User-Level Threads (ULT):** Managed in user space, fast context switching, not visible to the kernel.
+* **Kernel-Level Threads (KLT):** Managed by OS kernel, better concurrency, more overhead.
+
+---
+
+### 🔹 Q4: What are the different multithreading models?
+
+**A:**
+
+* **Many-to-One**: Many user threads → 1 kernel thread (low concurrency)
+* **One-to-One**: Each user thread → 1 kernel thread (good concurrency)
+* **Many-to-Many**: Many user threads → Many kernel threads (efficient & flexible)
+
+---
+
+### 🔹 Q5: What is thread pooling?
+
+**A:** Thread pooling is a technique where a fixed set of reusable threads is maintained to execute tasks, reducing overhead of thread creation and destruction.
+
+---
+
+### 🔹 Q6: What is a race condition?
+
+**A:** A race condition occurs when multiple threads access shared data simultaneously and the result depends on the timing of their execution.
+
+---
+
+### 🔹 Q7: How do you prevent race conditions?
+
+**A:** Use synchronization tools like Mutexes, Semaphores, and Monitors to protect critical sections.
+
+---
+
+### 🔹 Q8: What is the role of a monitor?
+
+**A:** A monitor is a high-level synchronization construct that encapsulates shared variables, the procedures that operate on them, and synchronization between threads.
+
+---
+
+### 🔹 Q9: Which model offers the best scalability: Many-to-One, One-to-One, or Many-to-Many?
+
+**A:** **Many-to-Many** offers the best scalability and performance because it allows flexibility in mapping threads and avoids resource exhaustion.
+
+---
+
+### 🔹 Q10: What happens if one thread in a user-level thread model blocks?
+
+**A:** If one thread blocks in a **Many-to-One model**, all threads block because the kernel sees them as a single thread.
+
+---
+
+**Thread Management** topics using `POSIX Threads (pthreads)` — the standard for multithreading in C on UNIX/Linux systems.
+
+---
+
+# ✅ **3. Thread Management in C with Code Examples (Using `pthreads`)**
+
+---
+
+## 1️⃣ **Threads vs Processes**
+
+(We demonstrate thread creation and compare with processes.)
+
+### 🧵 **Thread Example (Using `pthread_create`)**
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+
+void* myThreadFunc(void* arg) {
+    printf("Hello from thread!\n");
+    return NULL;
+}
+
+int main() {
+    pthread_t tid;
+    pthread_create(&tid, NULL, myThreadFunc, NULL);
+    pthread_join(tid, NULL);
+    printf("Thread has finished execution.\n");
+    return 0;
+}
+```
+
+---
+
+### 🔄 **Process Example (Using `fork`)**
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+    pid_t pid = fork();
+    if (pid == 0)
+        printf("Child Process\n");
+    else
+        printf("Parent Process\n");
+    return 0;
+}
+```
+
+---
+
+## 2️⃣ **User-Level vs Kernel-Level Threads**
+
+In Linux with `pthreads`, you create kernel-level threads. We cannot fully show ULTs in C alone, but you can **observe the difference via thread IDs**:
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
+
+void* threadFunc(void* arg) {
+    printf("Inside thread. TID: %lu\n", pthread_self());
+    return NULL;
+}
+
+int main() {
+    pthread_t tid;
+    pthread_create(&tid, NULL, threadFunc, NULL);
+    pthread_join(tid, NULL);
+    printf("Main thread finished.\n");
+    return 0;
+}
+```
+
+---
+
+## 3️⃣ **Thread Libraries: POSIX (pthreads)**
+
+* Already demonstrated above using:
+
+  * `pthread_create`
+  * `pthread_join`
+
+Other useful functions:
+
+```c
+pthread_exit();    // Exit thread
+pthread_self();    // Get thread ID
+pthread_equal();   // Compare thread IDs
+```
+
+---
+
+## 4️⃣ **Multithreading Models (Simulated)**
+
+In C with `pthreads`, only **one-to-one** is directly supported (each pthread maps to a kernel thread). Simulation of models:
+
+### ✅ Many-to-One: (Simulated with one kernel thread and manual switch)
+
+Not directly implementable in `pthreads`.
+
+### ✅ One-to-One: Default `pthread_create`
+
+### ✅ Many-to-Many: Requires custom threading libraries or OS support (e.g., GNU Portable Threads), not native to C with pthreads.
+
+---
+
+## 5️⃣ **Thread Pooling Example (Simple Simulation)**
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#define THREAD_COUNT 3
+
+void* task(void* arg) {
+    int* id = (int*)arg;
+    printf("Thread %d is doing its work.\n", *id);
+    free(id);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[THREAD_COUNT];
+
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        int* id = malloc(sizeof(int));
+        *id = i + 1;
+        pthread_create(&threads[i], NULL, task, id);
+    }
+
+    for (int i = 0; i < THREAD_COUNT; i++)
+        pthread_join(threads[i], NULL);
+
+    return 0;
+}
+```
+
+---
+
+## 6️⃣ **Thread Synchronization**
+
+### 🔐 **Using Mutex**
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+
+int counter = 0;
+pthread_mutex_t lock;
+
+void* increment(void* arg) {
+    for (int i = 0; i < 100000; i++) {
+        pthread_mutex_lock(&lock);
+        counter++;
+        pthread_mutex_unlock(&lock);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+    pthread_mutex_init(&lock, NULL);
+
+    pthread_create(&t1, NULL, increment, NULL);
+    pthread_create(&t2, NULL, increment, NULL);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    pthread_mutex_destroy(&lock);
+    printf("Final counter value: %d\n", counter);
+    return 0;
+}
+```
+
+---
+
+### ⚖️ **Using Semaphore**
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <semaphore.h>
+
+int counter = 0;
+sem_t sem;
+
+void* increment(void* arg) {
+    for (int i = 0; i < 100000; i++) {
+        sem_wait(&sem);
+        counter++;
+        sem_post(&sem);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+    sem_init(&sem, 0, 1);
+
+    pthread_create(&t1, NULL, increment, NULL);
+    pthread_create(&t2, NULL, increment, NULL);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    sem_destroy(&sem);
+    printf("Final counter value: %d\n", counter);
+    return 0;
+}
+```
+
+---
+
+## 7️⃣ **Thread Scheduling (Set Priority — Limited Control in Linux)**
+
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <sched.h>
+
+void* threadFunc(void* arg) {
+    printf("Running thread...\n");
+    return NULL;
+}
+
+int main() {
+    pthread_t tid;
+    pthread_attr_t attr;
+    struct sched_param param;
+
+    pthread_attr_init(&attr);
+    pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO policy
+    param.sched_priority = 10;
+    pthread_attr_setschedparam(&attr, &param);
+
+    pthread_create(&tid, &attr, threadFunc, NULL);
+    pthread_join(tid, NULL);
+    return 0;
+}
+```
+
+⚠️ **Note**: You may need **root privileges** to change scheduling policies or priorities.
+
+---
+
+## 🧪 Compile All C Codes Like:
+
+```bash
+gcc filename.c -o output -lpthread
+./output
+```
+
+---
+
+
+
 
 
