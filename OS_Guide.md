@@ -704,5 +704,216 @@ A system call allows user-level processes to request services from the OS.
 
 
 ---
+---
+# 🧑‍💻 2. Process Management — **Detailed Explanation**
+
+---
+
+## ✅ **Process Concepts**
+
+### 🔹 **What is a Process?**
+
+A **process** is an active instance of a program in execution. It includes the program code and its current activity, represented by:
+
+* Program Counter (PC)
+* Stack (function calls)
+* Data section (variables)
+* Heap (dynamic memory)
+
+---
+
+### 🔹 **Process Control Block (PCB)**
+
+A **PCB** is a data structure maintained by the OS for every process. It stores:
+
+* Process ID (PID)
+* Process state
+* Program counter
+* CPU registers
+* Memory management info (page tables)
+* Accounting info (CPU time used)
+* I/O status info
+
+---
+
+### 🔹 **Process States**
+
+```plaintext
+New → Ready → Running → Terminated
+             ↑       ↓
+          Waiting ← (I/O or event)
+```
+
+* **New**: Process is being created.
+* **Ready**: Waiting for CPU.
+* **Running**: Executing instructions.
+* **Waiting**: Waiting for I/O or event.
+* **Terminated**: Finished execution.
+
+---
+
+### 🔹 **Context Switching**
+
+When CPU switches from one process to another, the OS must save the **context** (registers, PC, etc.) of the current process and load the context of the next process.
+
+* Overhead: Takes time (no useful work done)
+* Enables multitasking
+
+---
+
+## ✅ **Types of Processes**
+
+| Type                           | Description                                                                            |
+| ------------------------------ | -------------------------------------------------------------------------------------- |
+| **User vs System**             | User processes run in user mode; system processes run in kernel mode.                  |
+| **Foreground vs Background**   | Foreground interacts with the user; background does not (e.g., daemons).               |
+| **Independent vs Cooperating** | Independent processes don’t share data; cooperating ones do (e.g., via shared memory). |
+
+---
+
+## ✅ **Process Scheduling**
+
+### 🔹 **Scheduling Queues**
+
+* **Job Queue**: All submitted processes.
+* **Ready Queue**: Processes ready to run.
+* **Device Queue**: Processes waiting for I/O devices.
+
+### 🔹 **Dispatcher**
+
+* Loads selected process from the ready queue to the CPU.
+* Performs:
+
+  * Context switch
+  * Jump to user mode
+  * Restart program counter
+
+### 🔹 **Preemptive vs Non-Preemptive Scheduling**
+
+| Type               | Description                                    |
+| ------------------ | ---------------------------------------------- |
+| **Preemptive**     | CPU can be taken away (e.g., Round Robin).     |
+| **Non-Preemptive** | CPU runs until the process finishes or blocks. |
+
+---
+
+## 🔁 **Scheduling Algorithms**
+
+### 1. **FCFS (First Come First Serve)**
+
+* Jobs are executed in the order they arrive.
+* Non-preemptive
+* Simple but may cause **convoy effect** (long process delays short ones).
+
+### 2. **SJF (Shortest Job First)**
+
+* Executes the shortest job first.
+* Non-preemptive
+* Optimal in terms of **average waiting time**, but needs to know burst time in advance.
+
+### 3. **SRTF (Shortest Remaining Time First)**
+
+* Preemptive version of SJF.
+* If a new process arrives with a shorter burst time, it preempts the current one.
+
+### 4. **Priority Scheduling**
+
+* Each process is assigned a priority; highest priority runs first.
+* Can be **preemptive or non-preemptive**.
+* Problem: **Starvation** (low-priority processes may never run).
+* Solution: **Aging** (gradually increasing priority over time).
+
+### 5. **Round Robin (RR)**
+
+* Each process gets a fixed **time quantum**.
+* After time expires, it's moved to the back of the queue.
+* Fair and preemptive.
+* Performance depends on the time quantum.
+
+### 6. **Multilevel Queue Scheduling**
+
+* Multiple queues (foreground, background) with different scheduling algorithms.
+* No movement between queues.
+
+### 7. **Multilevel Feedback Queue**
+
+* Like Multilevel Queue, but allows **movement between queues** based on behavior (e.g., CPU-bound vs I/O-bound).
+* Adaptive and complex.
+
+### 8. **Lottery Scheduling**
+
+* Each process gets a number of "lottery tickets."
+* Scheduler picks a ticket at random.
+* Fair, probabilistic, used in some modern systems.
+
+---
+
+# 💼 Interview Questions & Answers
+
+---
+
+### 🔹 Q1: What is a process?
+
+**A:** A process is a program in execution, containing its code, data, stack, and state. It’s managed by the OS through a Process Control Block (PCB).
+
+---
+
+### 🔹 Q2: What is the difference between a program and a process?
+
+**A:** A program is a passive set of instructions; a process is an active execution of those instructions.
+
+---
+
+### 🔹 Q3: What does a Process Control Block (PCB) contain?
+
+**A:** PID, process state, CPU registers, program counter, memory info, I/O status, and accounting info.
+
+---
+
+### 🔹 Q4: What is context switching?
+
+**A:** Context switching is saving the state of a running process and loading the state of another, enabling multitasking.
+
+---
+
+### 🔹 Q5: Difference between preemptive and non-preemptive scheduling?
+
+**A:** Preemptive allows the OS to interrupt a running process; non-preemptive lets the process finish or block first.
+
+---
+
+### 🔹 Q6: Which scheduling algorithm is best for minimum average waiting time?
+
+**A:** SJF (Shortest Job First), assuming burst times are known.
+
+---
+
+### 🔹 Q7: What is starvation in scheduling?
+
+**A:** Starvation happens when low-priority processes are indefinitely delayed. Aging can solve this.
+
+---
+
+### 🔹 Q8: Explain the Round Robin algorithm.
+
+**A:** Processes are given a fixed time slice in rotation. Fair and preemptive, ideal for time-sharing systems.
+
+---
+
+### 🔹 Q9: What is the difference between Multilevel Queue and Multilevel Feedback Queue?
+
+**A:**
+
+* **Multilevel Queue**: Fixed queues, no movement.
+* **Feedback Queue**: Processes can move between queues.
+
+---
+
+### 🔹 Q10: How is lottery scheduling different from traditional scheduling?
+
+**A:** Lottery scheduling assigns tickets to processes and picks randomly. It’s probabilistic and allows fair CPU sharing.
+
+---
+
 
 
