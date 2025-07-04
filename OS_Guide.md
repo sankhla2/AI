@@ -635,72 +635,72 @@ A system call allows user-level processes to request services from the OS.
 
 
 
-Operating System
-│
-├── 1. What is OS?
-│   ├─ Interface between User & Hardware
-│   ├─ Manages Resources
-│   └─ Provides Services
-│
-├── 2. Goals & Functions
-│   ├─ Convenience
-│   ├─ Efficiency
-│   └─ Evolvability
-│
-│   ┌─ Core Functions
-│   │   ├─ Process Management
-│   │   ├─ Memory Management
-│   │   ├─ File System Management
-│   │   ├─ I/O Management
-│   │   ├─ Security & Protection
-│   │   └─ User Interface
-│
-├── 3. Types of Operating Systems
-│   ├─ Batch OS
-│   ├─ Time-Sharing OS
-│   ├─ Distributed OS
-│   ├─ Real-Time OS
-│   │   ├─ Hard RTOS
-│   │   └─ Soft RTOS
-│   ├─ Embedded OS
-│   ├─ Network OS
-│   └─ Mobile OS
-│
-├── 4. OS Structures
-│   ├─ Monolithic Kernel
-│   ├─ Layered OS
-│   ├─ Microkernel
-│   ├─ Modular OS
-│   └─ Hybrid Kernel
-│
-├── 5. System Calls vs API
-│   ├─ System Call = Interface to Kernel
-│   ├─ API = Interface to Programmer
-│   └─ API wraps System Calls (e.g., POSIX)
-│
-├── 6. OS Services
-│   ├─ Program Execution
-│   ├─ I/O Operations
-│   ├─ File Manipulation
-│   ├─ Communication
-│   ├─ Error Detection
-│   ├─ Resource Allocation
-│   └─ Protection & Security
-│
-├── 7. User Mode vs Kernel Mode
-│   ├─ Kernel Mode = Full Access
-│   └─ User Mode = Restricted Access
-│
-└── 8. Boot Process
-    ├─ BIOS/UEFI
-    │   ├─ Power-On Self-Test
-    │   └─ Loads Bootloader
-    ├─ Bootloader
-    │   └─ Loads Kernel into Memory
-    └─ Kernel Initialization
-        ├─ Initializes Devices
-        ├─ Loads Drivers
-        └─ Starts init/systemd
+# 📘 Operating System – Introduction & Basics
+
+## 1. What is OS?
+- Interface between User & Hardware  
+- Manages Resources  
+- Provides Services  
+
+## 2. Goals & Functions
+- Convenience  
+- Efficiency  
+- Evolvability  
+
+### Core Functions:
+- Process Management  
+- Memory Management  
+- File System Management  
+- I/O Management  
+- Security & Protection  
+- User Interface  
+
+## 3. Types of Operating Systems
+- Batch OS  
+- Time-Sharing OS  
+- Distributed OS  
+- Real-Time OS  
+  - Hard RTOS  
+  - Soft RTOS  
+- Embedded OS  
+- Network OS  
+- Mobile OS  
+
+## 4. OS Structures
+- Monolithic Kernel  
+- Layered OS  
+- Microkernel  
+- Modular OS  
+- Hybrid Kernel  
+
+## 5. System Calls vs API
+- System Call = Interface to Kernel  
+- API = Interface to Programmer  
+- API wraps System Calls (e.g., POSIX)  
+
+## 6. OS Services
+- Program Execution  
+- I/O Operations  
+- File Manipulation  
+- Communication  
+- Error Detection  
+- Resource Allocation  
+- Protection & Security  
+
+## 7. User Mode vs Kernel Mode
+- Kernel Mode = Full Access  
+- User Mode = Restricted Access  
+
+## 8. Boot Process
+- **BIOS/UEFI**
+  - Power-On Self-Test (POST)  
+  - Loads Bootloader  
+- **Bootloader**
+  - Loads Kernel into Memory  
+- **Kernel Initialization**
+  - Initializes Devices  
+  - Loads Drivers  
+  - Starts `init` / `systemd`  
 
 
 ---
