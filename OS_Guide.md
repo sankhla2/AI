@@ -8,7 +8,6 @@
 * What is an Operating System
 * Functions and Goals of OS
 * Types of Operating Systems:
-
   * Batch OS
   * Time-Sharing OS
   * Distributed OS
